@@ -73,10 +73,16 @@
     "@types/node": "^20.11.0",
     "@vitest/coverage-v8": "^1.4.0",
     "husky": "^9.1.7",
+    "lint-staged": "^15.2.10",
     "oxlint": "^0.2.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.4.2",
     "vitest": "^1.4.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "oxfmt --write"
+    ]
   },
   "engines": {
     "node": ">=18.0.0"

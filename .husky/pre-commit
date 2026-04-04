@@ -1,18 +1,7 @@
 #!/bin/sh
-# Pre-commit hook: enforce formatting with oxfmt
+# Pre-commit hook: run lint-staged for oxfmt formatting
 . "$(dirname "$0")/_/husky.sh"
 
-echo "🔍 Checking formatting with oxfmt..."
+echo "🔍 Running lint-staged for formatting checks..."
 
-# Run oxfmt check
-oxfmt --check 'src/**/*.ts' 'tests/**/*.ts'
-
-# If oxfmt check fails, run the formatter and exit with error
-if [ $? -ne 0 ]; then
-    echo "❌ Formatting issues detected. Running formatter..."
-    oxfmt --write 'src/**/*.ts' 'tests/**/*.ts'
-    echo "✅ Files formatted. Please stage the changes and commit again."
-    exit 1
-fi
-
-echo "✅ Formatting check passed!"
+npx lint-staged
