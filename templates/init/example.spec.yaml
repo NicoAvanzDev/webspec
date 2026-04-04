@@ -1,0 +1,10 @@
+name: my first spec
+description: Replace this with a real description.
+baseUrl: https://example.com
+
+steps:
+  - navigate: /
+  - assertVisible:
+      role: heading
+      name: Example Domain
+  - assertTitle: Example Domain

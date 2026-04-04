@@ -1,0 +1,26 @@
+name: settings-page - uses login flow
+description: |
+  Reuse the login flow then navigate to settings and assert
+  the profile section is visible.
+baseUrl: ${BASE_URL:-https://example.com}
+tags:
+  - settings
+env:
+  EMAIL: ${TEST_EMAIL:-user@example.com}
+  PASSWORD: ${TEST_PASSWORD:-secret}
+
+steps:
+  - runFlow:
+      path: ./flows/login.spec.yaml
+      env:
+        EMAIL: ${EMAIL}
+        PASSWORD: ${PASSWORD}
+  - navigate: /settings
+  - assertVisible:
+      role: heading
+      name: Account Settings
+  - assertVisible:
+      testid: profile-section
+  - assertValue:
+      label: Email address
+      expected: ${EMAIL}

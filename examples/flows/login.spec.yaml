@@ -1,0 +1,32 @@
+name: login flow
+description: |
+  Reusable login sequence. Import this in other specs with:
+    - runFlow: ./flows/login.spec.yaml
+  or with env overrides:
+    - runFlow:
+        path: ./flows/login.spec.yaml
+        env:
+          EMAIL: custom@example.com
+
+  Environment variables used:
+    EMAIL    - login email (required)
+    PASSWORD - login password (required)
+
+steps:
+  - navigate: /login
+  - assertVisible:
+      role: heading
+      name: Sign In
+  - fill:
+      label: Email
+      value: ${EMAIL}
+  - fill:
+      label: Password
+      value: ${PASSWORD}
+  - click:
+      role: button
+      name: Sign In
+  - waitForUrl: /dashboard
+  - assertVisible:
+      role: heading
+      name: Dashboard

@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.tsbuildinfo
+
+# Test artifacts
+coverage/
+test-results/
+playwright-report/
+
+# WebSpec runtime artifacts
+webspec-artifacts/
+screenshots/
+traces/
+*.trace.zip
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

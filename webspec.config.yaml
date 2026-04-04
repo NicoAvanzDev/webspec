@@ -1,0 +1,50 @@
+# webspec.config.yaml
+# Reference: https://github.com/webspec/webspec/docs/config.md
+
+# The base URL prepended to relative paths in navigate steps.
+# Override per-spec or via WEBSPEC_BASE_URL environment variable.
+baseUrl: ""
+
+# Default browser engine. Options: chromium | firefox | webkit
+browser: chromium
+
+# Browser viewport dimensions.
+viewport:
+  width: 1280
+  height: 720
+
+# Run without a visible browser window (recommended for CI).
+headless: true
+
+# Default timeout per step in milliseconds.
+timeout: 10000
+
+# How many times to retry a failing spec (0 = no retries).
+retries: 0
+
+# Directory containing .spec.yaml files.
+specsDir: tests/specs
+
+# Directory containing reusable flow files.
+flowsDir: tests/flows
+
+# Root directory for all artifacts (screenshots, traces, reports).
+artifactsDir: webspec-artifacts
+
+# Screenshot capture policy.
+# Options: on | off | only-on-failure
+screenshot: only-on-failure
+
+# Playwright trace capture policy.
+# Options: on | off | retain-on-failure
+trace: off
+
+# Reporters to enable.
+reporters:
+  - console
+  # - json      # writes webspec-artifacts/run-summary.json
+  # - junit     # writes webspec-artifacts/test-results.xml
+
+# Default environment variables (lowest precedence).
+# env:
+#   BASE_URL: https://staging.example.com

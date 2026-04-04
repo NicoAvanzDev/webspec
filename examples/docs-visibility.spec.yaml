@@ -1,0 +1,31 @@
+name: docs-page - example text visibility
+description: |
+  Verify the documentation page loads, the nav link is clickable,
+  and the example code block is visible on the docs page.
+baseUrl: https://example.com
+browser: chromium
+viewport:
+  width: 1280
+  height: 720
+headless: true
+timeout: 10000
+tags:
+  - smoke
+  - docs
+
+steps:
+  - navigate: /
+  - assertVisible:
+      role: heading
+      name: Example Domain
+  - assertTitle: Example Domain
+  - log: "Homepage loaded. Navigating to docs..."
+  - navigate: /docs
+  - assertVisible:
+      text: Documentation
+  - assertContainsText:
+      css: body
+      contains: example
+  - screenshot:
+      path: docs-page.png
+      fullPage: true

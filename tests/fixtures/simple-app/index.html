@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>WebSpec Test Fixture</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    h1 { color: #333; }
+    nav a { margin-right: 12px; text-decoration: none; color: #0070f3; }
+    #content { margin-top: 24px; }
+    form { display: flex; flex-direction: column; gap: 12px; max-width: 320px; }
+    label { font-weight: bold; }
+    input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 8px 16px; background: #0070f3; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:disabled { background: #aaa; }
+    #status { margin-top: 12px; font-weight: bold; }
+    .hidden { display: none; }
+    .count-item { margin: 4px 0; }
+  </style>
+</head>
+<body>
+  <h1 data-testid="main-heading">WebSpec Test Fixture</h1>
+
+  <nav>
+    <a href="#docs" id="docs-link">Docs</a>
+    <a href="#login" id="login-link">Login</a>
+    <a href="#dashboard" id="dashboard-link" class="hidden">Dashboard</a>
+  </nav>
+
+  <div id="content">
+    <section id="home-section">
+      <p>Welcome to the WebSpec test fixture site.</p>
+      <p data-testid="example-text">This is an example paragraph for testing.</p>
+    </section>
+
+    <section id="docs-section" class="hidden">
+      <h2>Documentation</h2>
+      <p>Here is some documentation content.</p>
+      <pre><code data-testid="code-example">const result = webspec.run('my-spec.yaml');</code></pre>
+    </section>
+
+    <section id="login-section" class="hidden">
+      <h2>Sign In</h2>
+      <form id="login-form">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="Enter email" />
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Enter password" />
+        <button type="submit" id="login-btn">Sign In</button>
+      </form>
+      <p id="login-error" class="hidden" style="color:red">Invalid credentials.</p>
+    </section>
+
+    <section id="dashboard-section" class="hidden">
+      <h2>Dashboard</h2>
+      <p data-testid="welcome-message">Welcome back, user@example.com!</p>
+      <ul id="item-list">
+        <li class="list-item">Item 1</li>
+        <li class="list-item">Item 2</li>
+        <li class="list-item">Item 3</li>
+      </ul>
+    </section>
+  </div>
+
+  <script>
+    // Simple SPA router
+    function show(sectionId) {
+      document.querySelectorAll('#content section').forEach(s => s.classList.add('hidden'));
+      const el = document.getElementById(sectionId);
+      if (el) el.classList.remove('hidden');
+    }
+
+    document.getElementById('docs-link').addEventListener('click', e => {
+      e.preventDefault();
+      show('docs-section');
+      history.pushState({}, '', '#docs');
+    });
+
+    document.getElementById('login-link').addEventListener('click', e => {
+      e.preventDefault();
+      show('login-section');
+      history.pushState({}, '', '#login');
+    });
+
+    document.getElementById('login-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if (email === 'user@example.com' && password === 'secret') {
+        show('dashboard-section');
+        document.getElementById('dashboard-link').classList.remove('hidden');
+        history.pushState({}, '', '#dashboard');
+      } else {
+        document.getElementById('login-error').classList.remove('hidden');
+      }
+    });
+
+    // Handle hash on load
+    const hash = window.location.hash;
+    if (hash === '#docs') show('docs-section');
+    else if (hash === '#login') show('login-section');
+    else if (hash === '#dashboard') show('dashboard-section');
+    else show('home-section');
+  </script>
+</body>
+</html>
