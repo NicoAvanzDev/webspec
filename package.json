@@ -44,11 +44,11 @@
     "coverage": "vitest run --coverage",
     "lint": "oxlint --config .oxlintrc.json src tests",
     "lint:fix": "oxlint --config .oxlintrc.json --fix src tests",
-    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "fmt": "oxfmt --write 'src/**/*.ts' 'tests/**/*.ts'",
+    "fmt:check": "oxfmt --check 'src/**/*.ts' 'tests/**/*.ts'",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist .tsbuildinfo coverage",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "check": "npm run typecheck && npm run lint && npm run fmt:check && npm test",
     "example:docs-visibility": "node dist/cli/index.js run examples/docs-visibility.spec.yaml --headed",
     "example:login": "node dist/cli/index.js run examples/login.spec.yaml --headed",
     "prepublishOnly": "npm run check && npm pack --dry-run"
@@ -72,7 +72,6 @@
     "@types/node": "^20.11.0",
     "@vitest/coverage-v8": "^1.4.0",
     "oxlint": "^0.2.0",
-    "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "typescript": "^5.4.2",
     "vitest": "^1.4.0"
