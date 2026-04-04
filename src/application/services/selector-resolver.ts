@@ -17,16 +17,21 @@ export function resolveLocator(page: Page, selector: string | SelectorSpec): Loc
 
   // Priority order: text > role > testid > label > placeholder > css > xpath
   if (selector.text !== undefined) {
-    return page.getByText(selector.text, { exact: selector.exact ?? false });
+    const base = page.getByText(selector.text, {
+      exact: selector.exact ?? false,
+    });
+    return applyNth(base, selector.nth);
   }
 
   if (selector.role !== undefined) {
     const options = selector.name !== undefined ? { name: selector.name } : undefined;
-    return page.getByRole(selector.role as Parameters<Page["getByRole"]>[0], options);
+    const base = page.getByRole(selector.role as Parameters<Page["getByRole"]>[0], options);
+    return applyNth(base, selector.nth);
   }
 
   if (selector.testid !== undefined) {
-    return page.getByTestId(selector.testid);
+    const base = page.getByTestId(selector.testid);
+    return applyNth(base, selector.nth);
   }
 
   if (selector.label !== undefined) {
@@ -34,7 +39,9 @@ export function resolveLocator(page: Page, selector: string | SelectorSpec): Loc
   }
 
   if (selector.placeholder !== undefined) {
-    return page.getByPlaceholder(selector.placeholder, { exact: selector.exact ?? false });
+    return page.getByPlaceholder(selector.placeholder, {
+      exact: selector.exact ?? false,
+    });
   }
 
   if (selector.css !== undefined) {

@@ -13,7 +13,10 @@ export function normaliseSteps(steps: readonly Step[]): NormalisedStep[] {
   return steps.map(normaliseStep);
 }
 
-function normaliseStep(step: Step): NormalisedStep {
+/**
+ * Normalise a single step by expanding shorthand notations.
+ */
+export function normaliseStep(step: Step): NormalisedStep {
   const key = Object.keys(step)[0] as keyof Step;
   const value = step[key];
 
@@ -41,6 +44,31 @@ function normaliseStep(step: Step): NormalisedStep {
 
   // Convert string navigate to object form
   if (key === "navigate" && typeof value === "string") {
+    return { [key]: { url: value } } as NormalisedStep;
+  }
+
+  // Convert string assertUrl to object form
+  if (key === "assertUrl" && typeof value === "string") {
+    return { [key]: { url: value } } as NormalisedStep;
+  }
+
+  // Convert string assertTitle to object form
+  if (key === "assertTitle" && typeof value === "string") {
+    return { [key]: { title: value } } as NormalisedStep;
+  }
+
+  // Convert string pressKey to object form
+  if (key === "pressKey" && typeof value === "string") {
+    return { [key]: { key: value } } as NormalisedStep;
+  }
+
+  // Convert string runFlow to object form
+  if (key === "runFlow" && typeof value === "string") {
+    return { [key]: { path: value } } as NormalisedStep;
+  }
+
+  // Convert string waitForUrl to object form
+  if (key === "waitForUrl" && typeof value === "string") {
     return { [key]: { url: value } } as NormalisedStep;
   }
 

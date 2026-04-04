@@ -6,15 +6,13 @@ import { describe, it, expect } from "vitest";
 import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
-import { mergeWithDefaults } from "../../src/config/resolveConfig";
-import { buildDefaults } from "../../src/config/defaults";
-import { loadConfig } from "../../src/config/loadConfig";
+import { resolveConfig, loadConfig } from "../../src/infrastructure/config/loader";
 
 const CWD = process.cwd();
 
-describe("buildDefaults", () => {
+describe("resolveConfig", () => {
   it("returns sensible defaults", () => {
-    const defaults = buildDefaults(CWD);
+    const defaults = resolveConfig(CWD);
     expect(defaults.browser).toBe("chromium");
     expect(defaults.headless).toBe(true);
     expect(defaults.timeout).toBe(10000);
@@ -24,11 +22,9 @@ describe("buildDefaults", () => {
     expect(defaults.reporters).toEqual(["console"]);
     expect(defaults.viewport).toEqual({ width: 1280, height: 720 });
   });
-});
 
-describe("mergeWithDefaults", () => {
   it("merges partial config with defaults", () => {
-    const result = mergeWithDefaults({ browser: "firefox", timeout: 5000 }, CWD);
+    const result = resolveConfig(CWD, { browser: "firefox", timeout: 5000 });
     expect(result.browser).toBe("firefox");
     expect(result.timeout).toBe(5000);
     expect(result.headless).toBe(true); // default
@@ -36,7 +32,7 @@ describe("mergeWithDefaults", () => {
   });
 
   it("resolves relative specsDir to absolute path", () => {
-    const result = mergeWithDefaults({ specsDir: "my/specs" }, CWD);
+    const result = resolveConfig(CWD, { specsDir: "my/specs" });
     expect(path.isAbsolute(result.specsDir)).toBe(true);
     expect(result.specsDir).toContain("my");
     expect(result.specsDir).toContain("specs");
@@ -69,7 +65,8 @@ describe("loadConfig", () => {
   it("throws on invalid config file", () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "webspec-test-"));
     const configPath = path.join(tmpDir, "webspec.config.yaml");
-    fs.writeFileSync(configPath, "browser: safari\n", "utf-8"); // invalid
+    // Create a config with invalid YAML structure (array instead of object)
+    fs.writeFileSync(configPath, "- invalid\n- yaml\n- array\n", "utf-8");
 
     expect(() => loadConfig(tmpDir)).toThrow();
 

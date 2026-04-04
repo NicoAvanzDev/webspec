@@ -2,8 +2,8 @@
  * Unit tests for env variable resolution.
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { resolveEnvString, resolveEnv } from "../../src/core/resolveEnv";
+import { describe, it, expect } from "vitest";
+import { resolveEnvString, resolveEnv } from "../../src/application/services/env-resolver";
 
 describe("resolveEnvString", () => {
   it("replaces a known variable", () => {
@@ -15,9 +15,11 @@ describe("resolveEnvString", () => {
   });
 
   it("prefers env over default", () => {
-    expect(resolveEnvString("${URL:-https://fallback.com}", { URL: "https://real.com" })).toBe(
-      "https://real.com",
-    );
+    expect(
+      resolveEnvString("${URL:-https://fallback.com}", {
+        URL: "https://real.com",
+      }),
+    ).toBe("https://real.com");
   });
 
   it("throws when required variable is missing", () => {
@@ -50,6 +52,8 @@ describe("resolveEnv", () => {
 
   it("resolves nested object", () => {
     const input = { a: { b: "${X}" } };
-    expect(resolveEnv(input, { X: "resolved" })).toEqual({ a: { b: "resolved" } });
+    expect(resolveEnv(input, { X: "resolved" })).toEqual({
+      a: { b: "resolved" },
+    });
   });
 });

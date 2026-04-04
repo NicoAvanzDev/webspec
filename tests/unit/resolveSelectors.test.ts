@@ -5,9 +5,8 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { resolveLocator, describeSelector } from "../../src/core/resolveSelectors";
-import { WebSpecError } from "../../src/utils/errors";
-import type { SelectorSpec } from "../../src/types/spec";
+import { resolveLocator, describeSelector } from "../../src/application/services/selector-resolver";
+import type { SelectorSpec } from "../../src/domain/index";
 import type { Locator, Page } from "playwright";
 
 // ---------------------------------------------------------------------------
@@ -61,12 +60,14 @@ describe("resolveLocator", () => {
 
   it("role selector → getByRole", () => {
     resolveLocator(page, { role: "button", name: "Submit" });
-    expect(page.getByRole).toHaveBeenCalledWith("button", { name: "Submit", exact: undefined });
+    expect(page.getByRole).toHaveBeenCalledWith("button", {
+      name: "Submit",
+    });
   });
 
   it("role selector without name", () => {
     resolveLocator(page, { role: "heading" });
-    expect(page.getByRole).toHaveBeenCalledWith("heading", {});
+    expect(page.getByRole).toHaveBeenCalledWith("heading", undefined);
   });
 
   it("testid selector → getByTestId", () => {
@@ -76,12 +77,16 @@ describe("resolveLocator", () => {
 
   it("label selector → getByLabel", () => {
     resolveLocator(page, { label: "Email address" });
-    expect(page.getByLabel).toHaveBeenCalledWith("Email address", {});
+    expect(page.getByLabel).toHaveBeenCalledWith("Email address", {
+      exact: false,
+    });
   });
 
   it("placeholder selector → getByPlaceholder", () => {
     resolveLocator(page, { placeholder: "Search..." });
-    expect(page.getByPlaceholder).toHaveBeenCalledWith("Search...", {});
+    expect(page.getByPlaceholder).toHaveBeenCalledWith("Search...", {
+      exact: false,
+    });
   });
 
   it("css selector → locator", () => {
@@ -105,11 +110,11 @@ describe("resolveLocator", () => {
     expect(loc).toBe(baseLoc.nth.mock.results[0]?.value);
   });
 
-  it("throws WebSpecError when no selector field is provided", () => {
-    // An empty object (no text/role/testid/etc.)
+  it("returns body locator when no selector field is provided", () => {
+    // An empty object (no text/role/testid/etc.) returns body locator
     const sel = {} as unknown as SelectorSpec;
-    expect(() => resolveLocator(page, sel)).toThrow(WebSpecError);
-    expect(() => resolveLocator(page, sel)).toThrow(/No valid selector field/);
+    resolveLocator(page, sel);
+    expect(page.locator).toHaveBeenCalledWith("body");
   });
 });
 
@@ -118,8 +123,8 @@ describe("resolveLocator", () => {
 // ---------------------------------------------------------------------------
 
 describe("describeSelector", () => {
-  it('string → text="..."', () => {
-    expect(describeSelector("Sign In")).toBe('text="Sign In"');
+  it('string → "..."', () => {
+    expect(describeSelector("Sign In")).toBe('"Sign In"');
   });
 
   it("text field", () => {
@@ -131,7 +136,7 @@ describe("describeSelector", () => {
   });
 
   it("role with name", () => {
-    expect(describeSelector({ role: "button", name: "Submit" })).toBe('role=button[name="Submit"]');
+    expect(describeSelector({ role: "button", name: "Submit" })).toBe('role=button name="Submit"');
   });
 
   it("testid", () => {
@@ -147,14 +152,14 @@ describe("describeSelector", () => {
   });
 
   it("css", () => {
-    expect(describeSelector({ css: ".btn-primary" })).toBe('css=".btn-primary"');
+    expect(describeSelector({ css: ".btn-primary" })).toBe("css=.btn-primary");
   });
 
   it("xpath", () => {
-    expect(describeSelector({ xpath: "//div" })).toBe('xpath="//div"');
+    expect(describeSelector({ xpath: "//div" })).toBe("xpath=//div");
   });
 
-  it("unknown selector → <unknown selector>", () => {
-    expect(describeSelector({} as SelectorSpec)).toBe("<unknown selector>");
+  it("unknown selector → [unknown]", () => {
+    expect(describeSelector({} as SelectorSpec)).toBe("[unknown]");
   });
 });

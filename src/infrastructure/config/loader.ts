@@ -32,11 +32,14 @@ const DEFAULT_CONFIG: Required<Omit<ResolvedConfig, "configFilePath">> = {
 /**
  * Load config from file without resolving defaults.
  */
-export function loadConfig(cwd: string): WebSpecConfig {
+export function loadConfig(cwd: string): {
+  config: WebSpecConfig;
+  configFilePath?: string;
+} {
   const configPath = findConfigFile(cwd);
 
   if (configPath === undefined) {
-    return {};
+    return { config: {} };
   }
 
   try {
@@ -48,7 +51,7 @@ export function loadConfig(cwd: string): WebSpecConfig {
       throw new ConfigError('Config field "reporters" must be an array');
     }
 
-    return parsed as WebSpecConfig;
+    return { config: parsed as WebSpecConfig, configFilePath: configPath };
   } catch (err) {
     if (err instanceof ConfigError) {
       throw err;
@@ -67,9 +70,11 @@ export function resolveConfig(
   overrides: Partial<ResolvedConfig> = {},
   specConfig: WebSpecConfig = {},
 ): ResolvedConfig {
-  const fileConfig = loadConfig(cwd);
+  const { config: fileConfig } = loadConfig(cwd);
 
   const configFilePath = findConfigFile(cwd);
+
+  const resolvePath = (p: string): string => (path.isAbsolute(p) ? p : path.join(cwd, p));
 
   const resolved: ResolvedConfig = {
     baseUrl:
@@ -84,15 +89,20 @@ export function resolveConfig(
       overrides.timeout ?? specConfig.timeout ?? fileConfig.timeout ?? DEFAULT_CONFIG.timeout,
     retries:
       overrides.retries ?? specConfig.retries ?? fileConfig.retries ?? DEFAULT_CONFIG.retries,
-    specsDir: overrides.specsDir ?? fileConfig.specsDir ?? DEFAULT_CONFIG.specsDir,
-    flowsDir: overrides.flowsDir ?? fileConfig.flowsDir ?? DEFAULT_CONFIG.flowsDir,
+    specsDir: resolvePath(overrides.specsDir ?? fileConfig.specsDir ?? DEFAULT_CONFIG.specsDir),
+    flowsDir: resolvePath(overrides.flowsDir ?? fileConfig.flowsDir ?? DEFAULT_CONFIG.flowsDir),
     screenshotsDir:
       overrides.screenshotsDir ?? fileConfig.screenshotsDir ?? DEFAULT_CONFIG.screenshotsDir,
     artifactsDir: overrides.artifactsDir ?? fileConfig.artifactsDir ?? DEFAULT_CONFIG.artifactsDir,
     screenshot: overrides.screenshot ?? fileConfig.screenshot ?? DEFAULT_CONFIG.screenshot,
     trace: overrides.trace ?? fileConfig.trace ?? DEFAULT_CONFIG.trace,
     reporters: overrides.reporters ?? fileConfig.reporters ?? DEFAULT_CONFIG.reporters,
-    env: { ...DEFAULT_CONFIG.env, ...fileConfig.env, ...specConfig.env, ...overrides.env },
+    env: {
+      ...DEFAULT_CONFIG.env,
+      ...fileConfig.env,
+      ...specConfig.env,
+      ...overrides.env,
+    },
     ...(configFilePath !== undefined ? { configFilePath } : {}),
   };
 

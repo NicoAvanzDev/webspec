@@ -12,9 +12,9 @@ import * as http from "http";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
-import { runSpec } from "../../src/runtime/runner";
-import { parseSpecFromString } from "../../src/core/parseSpec";
-import { stringifyYaml } from "../../src/utils/yaml";
+import { runSpec } from "../../src/application/services/runner";
+import { parseSpecFromString } from "../../src/application/services/spec-parser";
+import { stringifyYaml } from "../../src/infrastructure/persistence/yaml";
 
 const FIXTURE_DIR = path.join(__dirname, "..", "fixtures", "simple-app");
 let server: http.Server;

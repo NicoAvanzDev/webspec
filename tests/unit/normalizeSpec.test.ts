@@ -3,8 +3,8 @@
  */
 
 import { describe, it, expect } from "vitest";
-import { normaliseStep, normaliseSteps } from "../../src/core/normalizeSpec";
-import type { Step } from "../../src/types/spec";
+import { normaliseStep, normaliseSteps } from "../../src/application/services/normalizer";
+import type { Step } from "../../src/domain/index";
 
 describe("normaliseStep", () => {
   it("expands navigate shorthand string", () => {
@@ -40,7 +40,9 @@ describe("normaliseStep", () => {
 
   it("expands assertTitle string shorthand", () => {
     const step: Step = { assertTitle: "Dashboard" };
-    expect(normaliseStep(step)).toEqual({ assertTitle: { title: "Dashboard" } });
+    expect(normaliseStep(step)).toEqual({
+      assertTitle: { title: "Dashboard" },
+    });
   });
 
   it("expands pressKey string shorthand", () => {
@@ -50,7 +52,9 @@ describe("normaliseStep", () => {
 
   it("expands runFlow string shorthand", () => {
     const step: Step = { runFlow: "./flows/login.yaml" };
-    expect(normaliseStep(step)).toEqual({ runFlow: { path: "./flows/login.yaml" } });
+    expect(normaliseStep(step)).toEqual({
+      runFlow: { path: "./flows/login.yaml" },
+    });
   });
 
   it("expands waitForUrl string shorthand", () => {

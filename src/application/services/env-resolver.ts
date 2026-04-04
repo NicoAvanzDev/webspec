@@ -23,27 +23,20 @@ export function resolveEnvString(value: string, env: Readonly<Record<string, str
       return env[varName] ?? defaultValue ?? match;
     }
 
-    return env[inner] ?? match;
+    // Check env first, then process.env, then throw if still missing
+    const varValue = env[inner] ?? process.env[inner];
+    if (varValue === undefined) {
+      throw new Error(`Required environment variable ${inner} is not set`);
+    }
+    return varValue;
   });
 }
 
 /**
  * Recursively resolve environment variables in step objects.
  */
-export function resolveEnv(
-  steps: readonly Step[],
-  env: Readonly<Record<string, string>>,
-): NormalisedStep[] {
-  return steps.map((step) => resolveStepEnv(step, env));
-}
-
-function resolveStepEnv(step: Step, env: Readonly<Record<string, string>>): NormalisedStep {
-  const entries = Object.entries(step);
-  const resolvedEntries = entries.map(([key, value]) => {
-    const resolvedValue = resolveValue(value, env);
-    return [key, resolvedValue] as const;
-  });
-  return Object.fromEntries(resolvedEntries) as NormalisedStep;
+export function resolveEnv<T>(steps: T, env: Readonly<Record<string, string>>): T {
+  return resolveValue(steps, env) as T;
 }
 
 function resolveValue(value: unknown, env: Readonly<Record<string, string>>): unknown {

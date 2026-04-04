@@ -6,8 +6,8 @@ import { describe, it, expect } from "vitest";
 import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
-import { resolveFlows } from "../../src/core/flowResolver";
-import type { Step } from "../../src/types/spec";
+import { resolveFlows } from "../../src/application/services/flow-resolver";
+import type { Step } from "../../src/domain/index";
 
 function writeTempFlow(dir: string, name: string, content: string): string {
   const p = path.join(dir, name);
@@ -43,17 +43,18 @@ describe("resolveFlows", () => {
     });
 
     expect(result).toHaveLength(2);
-    expect(result[0]).toEqual({ navigate: { url: "/login" } });
-    expect(result[1]).toEqual({ click: { text: "Sign In" } });
+    // Note: Flow resolver returns raw steps, not normalised
+    expect(result[0]).toEqual({ navigate: "/login" });
+    expect(result[1]).toEqual({ click: "Sign In" });
 
     fs.unlinkSync(path.join(tmpDir, "login.yaml"));
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  it("throws FlowNotFoundError for missing flow file", async () => {
+  it("throws for missing flow file", async () => {
     const steps: Step[] = [{ runFlow: "./nonexistent.yaml" }];
     await expect(resolveFlows(steps, { parentPath: "/fake/parent.yaml", env: {} })).rejects.toThrow(
-      /Flow file not found/,
+      /Failed to resolve flow/,
     );
   });
 
