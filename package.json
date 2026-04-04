@@ -1,6 +1,6 @@
 {
   "name": "@nicoavanzdev/webspec",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A CLI + runtime framework for declarative browser-automation specs — web-only, agent-friendly, Playwright-powered",
   "keywords": [
     "web-automation",
