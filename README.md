@@ -1,5 +1,8 @@
 # WebSpec
 
+[![CI](https://github.com/NicoAvanzDev/webspec/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/NicoAvanzDev/webspec/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@nicoavanzdev/webspec)](https://www.npmjs.com/package/@nicoavanzdev/webspec)
+
 Browser automation for the agent era. Describe a web flow in plain language — your AI agent writes the spec and runs it.
 
 WebSpec is a YAML-spec + Playwright runtime designed to be driven by AI agents (Claude Code, Codex, OpenCode). You almost never touch the YAML.
