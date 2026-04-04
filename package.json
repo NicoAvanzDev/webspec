@@ -49,6 +49,7 @@
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist .tsbuildinfo coverage",
     "check": "npm run typecheck && npm run lint && npm run fmt:check && npm test",
+    "prepare": "husky install",
     "example:docs-visibility": "node dist/cli/index.js run examples/docs-visibility.spec.yaml --headed",
     "example:login": "node dist/cli/index.js run examples/login.spec.yaml --headed",
     "prepublishOnly": "npm run check && npm pack --dry-run"
@@ -71,6 +72,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.11.0",
     "@vitest/coverage-v8": "^1.4.0",
+    "husky": "^9.1.7",
     "oxlint": "^0.2.0",
     "rimraf": "^5.0.5",
     "typescript": "^5.4.2",

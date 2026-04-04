@@ -1,0 +1,18 @@
+#!/bin/sh
+# Pre-commit hook: enforce formatting with oxfmt
+. "$(dirname "$0")/_/husky.sh"
+
+echo "🔍 Checking formatting with oxfmt..."
+
+# Run oxfmt check
+oxfmt --check 'src/**/*.ts' 'tests/**/*.ts'
+
+# If oxfmt check fails, run the formatter and exit with error
+if [ $? -ne 0 ]; then
+    echo "❌ Formatting issues detected. Running formatter..."
+    oxfmt --write 'src/**/*.ts' 'tests/**/*.ts'
+    echo "✅ Files formatted. Please stage the changes and commit again."
+    exit 1
+fi
+
+echo "✅ Formatting check passed!"
