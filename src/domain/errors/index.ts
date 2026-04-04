@@ -12,7 +12,7 @@ export class WebSpecError extends Error {
     public override readonly cause?: Error,
   ) {
     super(message);
-    this.name = 'WebSpecError';
+    this.name = "WebSpecError";
     // Maintain proper prototype chain in CJS
     Object.setPrototypeOf(this, new.target.prototype);
   }
@@ -25,7 +25,7 @@ export class ValidationError extends WebSpecError {
     public readonly errors: readonly string[],
   ) {
     super(message);
-    this.name = 'ValidationError';
+    this.name = "ValidationError";
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
@@ -39,7 +39,7 @@ export class StepError extends WebSpecError {
     cause?: Error,
   ) {
     super(message, cause);
-    this.name = 'StepError';
+    this.name = "StepError";
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
@@ -47,8 +47,8 @@ export class StepError extends WebSpecError {
 /** Raised when a runFlow reference creates a circular dependency. */
 export class CircularFlowError extends WebSpecError {
   constructor(public readonly cycle: readonly string[]) {
-    super(`Circular flow dependency detected: ${cycle.join(' → ')}`);
-    this.name = 'CircularFlowError';
+    super(`Circular flow dependency detected: ${cycle.join(" → ")}`);
+    this.name = "CircularFlowError";
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
@@ -57,7 +57,7 @@ export class CircularFlowError extends WebSpecError {
 export class FlowNotFoundError extends WebSpecError {
   constructor(public readonly flowPath: string) {
     super(`Flow file not found: ${flowPath}`);
-    this.name = 'FlowNotFoundError';
+    this.name = "FlowNotFoundError";
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
@@ -66,10 +66,10 @@ export class FlowNotFoundError extends WebSpecError {
 export class MobileNotSupportedError extends WebSpecError {
   constructor() {
     super(
-      'WebSpec is a web-only framework. Mobile app automation (iOS, Android, React Native) is out of scope. ' +
-        'If you need mobile web testing, set a mobile viewport in your spec file.',
+      "WebSpec is a web-only framework. Mobile app automation (iOS, Android, React Native) is out of scope. " +
+        "If you need mobile web testing, set a mobile viewport in your spec file.",
     );
-    this.name = 'MobileNotSupportedError';
+    this.name = "MobileNotSupportedError";
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
@@ -78,7 +78,7 @@ export class MobileNotSupportedError extends WebSpecError {
 export class ConfigError extends WebSpecError {
   constructor(message: string) {
     super(message);
-    this.name = 'ConfigError';
+    this.name = "ConfigError";
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }
@@ -88,10 +88,10 @@ export class ConfigError extends WebSpecError {
  */
 export function formatError(err: unknown): string {
   if (err instanceof ValidationError) {
-    return [`Validation failed:`, ...err.errors.map((e) => `  • ${e}`)].join('\n');
+    return [`Validation failed:`, ...err.errors.map((e) => `  • ${e}`)].join("\n");
   }
   if (err instanceof WebSpecError) {
-    return err.message + (err.cause ? `\n  Caused by: ${err.cause.message}` : '');
+    return err.message + (err.cause ? `\n  Caused by: ${err.cause.message}` : "");
   }
   if (err instanceof Error) {
     return err.message;

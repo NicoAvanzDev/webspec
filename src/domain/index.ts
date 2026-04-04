@@ -75,7 +75,7 @@ export type {
   RunFlowStep,
   EvaluateParams,
   EvaluateStep,
-} from './types/spec';
+} from "./types/spec";
 
 export type {
   // Config types
@@ -84,7 +84,7 @@ export type {
   ScreenshotMode,
   TraceMode,
   ReporterType,
-} from './types/config';
+} from "./types/config";
 
 export type {
   // Result types
@@ -93,7 +93,7 @@ export type {
   RunSummary,
   StepStatus,
   SpecStatus,
-} from './types/results';
+} from "./types/results";
 
 // Errors
 export {
@@ -105,4 +105,4 @@ export {
   MobileNotSupportedError,
   ConfigError,
   formatError,
-} from './errors';
+} from "./errors";

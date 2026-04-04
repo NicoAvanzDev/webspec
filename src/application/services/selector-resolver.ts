@@ -4,14 +4,14 @@
  * Converts WebSpec selector specs to Playwright locators.
  */
 
-import type { Page, Locator } from 'playwright';
-import type { SelectorSpec } from '../../domain/index';
+import type { Page, Locator } from "playwright";
+import type { SelectorSpec } from "../../domain/index";
 
 /**
  * Resolve a WebSpec selector to a Playwright locator.
  */
 export function resolveLocator(page: Page, selector: string | SelectorSpec): Locator {
-  if (typeof selector === 'string') {
+  if (typeof selector === "string") {
     return page.getByText(selector, { exact: false });
   }
 
@@ -22,7 +22,7 @@ export function resolveLocator(page: Page, selector: string | SelectorSpec): Loc
 
   if (selector.role !== undefined) {
     const options = selector.name !== undefined ? { name: selector.name } : undefined;
-    return page.getByRole(selector.role as Parameters<Page['getByRole']>[0], options);
+    return page.getByRole(selector.role as Parameters<Page["getByRole"]>[0], options);
   }
 
   if (selector.testid !== undefined) {
@@ -48,7 +48,7 @@ export function resolveLocator(page: Page, selector: string | SelectorSpec): Loc
   }
 
   // Fallback: return body locator if no selector specified
-  return page.locator('body');
+  return page.locator("body");
 }
 
 function applyNth(locator: Locator, nth: number | undefined): Locator {
@@ -62,16 +62,16 @@ function applyNth(locator: Locator, nth: number | undefined): Locator {
  * Generate a human-readable description of a selector.
  */
 export function describeSelector(selector: string | SelectorSpec): string {
-  if (typeof selector === 'string') {
+  if (typeof selector === "string") {
     return `"${selector}"`;
   }
 
   if (selector.text !== undefined) {
-    return `text="${selector.text}"${selector.exact ? ' (exact)' : ''}`;
+    return `text="${selector.text}"${selector.exact ? " (exact)" : ""}`;
   }
 
   if (selector.role !== undefined) {
-    const name = selector.name !== undefined ? ` name="${selector.name}"` : '';
+    const name = selector.name !== undefined ? ` name="${selector.name}"` : "";
     return `role=${selector.role}${name}`;
   }
 
@@ -80,22 +80,22 @@ export function describeSelector(selector: string | SelectorSpec): string {
   }
 
   if (selector.label !== undefined) {
-    return `label="${selector.label}"${selector.exact ? ' (exact)' : ''}`;
+    return `label="${selector.label}"${selector.exact ? " (exact)" : ""}`;
   }
 
   if (selector.placeholder !== undefined) {
-    return `placeholder="${selector.placeholder}"${selector.exact ? ' (exact)' : ''}`;
+    return `placeholder="${selector.placeholder}"${selector.exact ? " (exact)" : ""}`;
   }
 
   if (selector.css !== undefined) {
-    const nth = selector.nth !== undefined ? `[${selector.nth}]` : '';
+    const nth = selector.nth !== undefined ? `[${selector.nth}]` : "";
     return `css=${selector.css}${nth}`;
   }
 
   if (selector.xpath !== undefined) {
-    const nth = selector.nth !== undefined ? `[${selector.nth}]` : '';
+    const nth = selector.nth !== undefined ? `[${selector.nth}]` : "";
     return `xpath=${selector.xpath}${nth}`;
   }
 
-  return '[unknown]';
+  return "[unknown]";
 }

@@ -4,28 +4,28 @@
  * Loads and resolves webspec.config.yaml with defaults.
  */
 
-import * as path from 'node:path';
-import type { WebSpecConfig, ResolvedConfig, BrowserType } from '../../domain/index';
-import { ConfigError } from '../../domain/index';
-import { exists, readFile } from '../persistence/filesystem';
-import { parseYamlObject } from '../persistence/yaml';
+import * as path from "node:path";
+import type { WebSpecConfig, ResolvedConfig, BrowserType } from "../../domain/index";
+import { ConfigError } from "../../domain/index";
+import { exists, readFile } from "../persistence/filesystem";
+import { parseYamlObject } from "../persistence/yaml";
 
 const DEFAULT_VIEWPORT = { width: 1280, height: 720 };
 
-const DEFAULT_CONFIG: Required<Omit<ResolvedConfig, 'configFilePath'>> = {
-  baseUrl: '',
-  browser: 'chromium' as BrowserType,
+const DEFAULT_CONFIG: Required<Omit<ResolvedConfig, "configFilePath">> = {
+  baseUrl: "",
+  browser: "chromium" as BrowserType,
   viewport: DEFAULT_VIEWPORT,
   headless: true,
   timeout: 10000,
   retries: 0,
-  specsDir: 'tests/specs',
-  flowsDir: 'tests/flows',
-  screenshotsDir: 'webspec-artifacts/screenshots',
-  artifactsDir: 'webspec-artifacts',
-  screenshot: 'only-on-failure',
-  trace: 'off',
-  reporters: ['console'],
+  specsDir: "tests/specs",
+  flowsDir: "tests/flows",
+  screenshotsDir: "webspec-artifacts/screenshots",
+  artifactsDir: "webspec-artifacts",
+  screenshot: "only-on-failure",
+  trace: "off",
+  reporters: ["console"],
   env: {},
 };
 
@@ -100,10 +100,10 @@ export function resolveConfig(
 }
 
 const CONFIG_NAMES = [
-  'webspec.config.yaml',
-  'webspec.config.yml',
-  '.webspecrc.yaml',
-  '.webspecrc.yml',
+  "webspec.config.yaml",
+  "webspec.config.yml",
+  ".webspecrc.yaml",
+  ".webspecrc.yml",
 ];
 
 function findConfigFile(cwd: string): string | undefined {

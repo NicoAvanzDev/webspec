@@ -4,8 +4,8 @@
  * Maps command keys to their handler and description functions.
  */
 
-import type { Step } from '../../../domain/index';
-import type { ExecutionContext } from '../context';
+import type { Step } from "../../../domain/index";
+import type { ExecutionContext } from "../context";
 
 import {
   handleNavigate,
@@ -16,7 +16,7 @@ import {
   describeGoBack,
   handleGoForward,
   describeGoForward,
-} from './navigation';
+} from "./navigation";
 
 import {
   handleClick,
@@ -31,7 +31,7 @@ import {
   describeType,
   handlePressKey,
   describePressKey,
-} from './interactions';
+} from "./interactions";
 
 import {
   handleAssertVisible,
@@ -46,16 +46,16 @@ import {
   describeAssertUrl,
   handleAssertTitle,
   describeAssertTitle,
-} from './assertions';
+} from "./assertions";
 
 import {
   handleWaitForElement,
   describeWaitForElement,
   handleWaitForUrl,
   describeWaitForUrl,
-} from './waiting';
+} from "./waiting";
 
-import { handleScreenshot, describeScreenshot, handleLog, describeLog } from './utilities';
+import { handleScreenshot, describeScreenshot, handleLog, describeLog } from "./utilities";
 
 type Handler = (step: Step, ctx: ExecutionContext) => Promise<void>;
 type Describer = (step: Step) => string;

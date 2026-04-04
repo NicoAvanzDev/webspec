@@ -4,8 +4,8 @@
  * Wraps js-yaml with domain error handling.
  */
 
-import * as yaml from 'js-yaml';
-import { ValidationError } from '../../domain/index';
+import * as yaml from "js-yaml";
+import { ValidationError } from "../../domain/index";
 
 /**
  * Parse YAML content into a JavaScript value.
@@ -16,7 +16,7 @@ export function parseYaml(content: string, sourcePath?: string): unknown {
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     throw new ValidationError(
-      sourcePath ? `Failed to parse YAML: ${sourcePath}` : 'Failed to parse YAML',
+      sourcePath ? `Failed to parse YAML: ${sourcePath}` : "Failed to parse YAML",
       [message],
     );
   }
@@ -40,10 +40,10 @@ export function stringifyYaml(data: unknown): string {
 export function parseYamlObject(content: string, sourcePath?: string): Record<string, unknown> {
   const parsed = parseYaml(content, sourcePath);
 
-  if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+  if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
     throw new ValidationError(
-      sourcePath ? `Invalid YAML structure: ${sourcePath}` : 'Invalid YAML structure',
-      ['Expected YAML object, got array or primitive'],
+      sourcePath ? `Invalid YAML structure: ${sourcePath}` : "Invalid YAML structure",
+      ["Expected YAML object, got array or primitive"],
     );
   }
 

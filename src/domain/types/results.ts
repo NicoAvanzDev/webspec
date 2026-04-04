@@ -2,8 +2,8 @@
  * Runtime result types for spec execution.
  */
 
-export type StepStatus = 'passed' | 'failed' | 'skipped';
-export type SpecStatus = 'passed' | 'failed' | 'error';
+export type StepStatus = "passed" | "failed" | "skipped";
+export type SpecStatus = "passed" | "failed" | "error";
 
 export interface StepResult {
   readonly index: number;

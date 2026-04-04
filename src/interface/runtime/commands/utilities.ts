@@ -2,13 +2,13 @@
  * Utility command handlers.
  */
 
-import * as path from 'node:path';
-import * as fs from 'node:fs';
-import type { Step } from '../../../domain/index';
-import type { ExecutionContext } from '../context';
+import * as path from "node:path";
+import * as fs from "node:fs";
+import type { Step } from "../../../domain/index";
+import type { ExecutionContext } from "../context";
 
 export async function handleScreenshot(step: Step, ctx: ExecutionContext): Promise<void> {
-  const params = 'screenshot' in step ? step.screenshot : undefined;
+  const params = "screenshot" in step ? step.screenshot : undefined;
   if (params === null || params === undefined) {
     const defaultPath = path.join(ctx.config.screenshotsDir, `screenshot-${Date.now()}.png`);
     fs.mkdirSync(ctx.config.screenshotsDir, { recursive: true });
@@ -24,26 +24,26 @@ export async function handleScreenshot(step: Step, ctx: ExecutionContext): Promi
 }
 
 export async function handleLog(step: Step): Promise<void> {
-  const params = 'log' in step ? step.log : undefined;
+  const params = "log" in step ? step.log : undefined;
   if (params !== undefined) {
     console.log(`[spec] ${params}`);
   }
 }
 
 export function describeScreenshot(step: Step): string {
-  const params = 'screenshot' in step ? step.screenshot : undefined;
+  const params = "screenshot" in step ? step.screenshot : undefined;
   if (
     params !== undefined &&
     params !== null &&
-    typeof params === 'object' &&
+    typeof params === "object" &&
     params.path !== undefined
   ) {
     return `screenshot → "${params.path}"`;
   }
-  return 'screenshot';
+  return "screenshot";
 }
 
 export function describeLog(step: Step): string {
-  const params = 'log' in step ? step.log : undefined;
-  return `log: "${params ?? ''}"`;
+  const params = "log" in step ? step.log : undefined;
+  return `log: "${params ?? ""}"`;
 }

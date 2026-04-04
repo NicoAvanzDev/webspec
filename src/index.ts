@@ -25,7 +25,7 @@ export type {
   RunSummary,
   StepStatus,
   SpecStatus,
-} from './domain/index';
+} from "./domain/index";
 
 export {
   // Errors
@@ -37,7 +37,7 @@ export {
   MobileNotSupportedError,
   ConfigError,
   formatError,
-} from './domain/index';
+} from "./domain/index";
 
 // Application
 export {
@@ -50,9 +50,9 @@ export {
   resolveFlows,
   resolveLocator,
   describeSelector,
-} from './application/index';
+} from "./application/index";
 
-export type { FlowResolutionOptions } from './application/index';
+export type { FlowResolutionOptions } from "./application/index";
 
 // Infrastructure
 export {
@@ -67,10 +67,10 @@ export {
   isFile,
   loadConfig,
   resolveConfig,
-} from './infrastructure/index';
+} from "./infrastructure/index";
 
 // Interface
-export type { ExecutionContext, CommandEntry, Reporter } from './interface/index';
+export type { ExecutionContext, CommandEntry, Reporter } from "./interface/index";
 export {
   buildUrl,
   captureScreenshot,
@@ -80,4 +80,4 @@ export {
   ConsoleReporter,
   JsonReporter,
   MultiReporter,
-} from './interface/index';
+} from "./interface/index";

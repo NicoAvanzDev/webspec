@@ -4,16 +4,16 @@
  * Provides file system operations with error handling.
  */
 
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import { ValidationError } from '../../domain/index';
+import * as fs from "node:fs";
+import * as path from "node:path";
+import { ValidationError } from "../../domain/index";
 
 /**
  * Read a file as UTF-8 text.
  */
 export function readFile(filePath: string): string {
   try {
-    return fs.readFileSync(filePath, 'utf-8');
+    return fs.readFileSync(filePath, "utf-8");
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     throw new ValidationError(`Failed to read file: ${filePath}`, [message]);
@@ -25,12 +25,12 @@ export function readFile(filePath: string): string {
  */
 export function writeFile(filePath: string, content: string, force = false): void {
   if (!force && fs.existsSync(filePath)) {
-    throw new ValidationError(`File already exists: ${filePath}`, ['Use force=true to overwrite']);
+    throw new ValidationError(`File already exists: ${filePath}`, ["Use force=true to overwrite"]);
   }
 
   try {
     ensureDir(path.dirname(filePath));
-    fs.writeFileSync(filePath, content, 'utf-8');
+    fs.writeFileSync(filePath, content, "utf-8");
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     throw new ValidationError(`Failed to write file: ${filePath}`, [message]);

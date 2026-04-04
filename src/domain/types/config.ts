@@ -5,11 +5,11 @@
  *   CLI flags > process.env > spec file fields > config file > built-in defaults
  */
 
-import type { BrowserType, ViewportSpec } from './spec';
+import type { BrowserType, ViewportSpec } from "./spec";
 
-export type ScreenshotMode = 'on' | 'off' | 'only-on-failure';
-export type TraceMode = 'on' | 'off' | 'retain-on-failure';
-export type ReporterType = 'console' | 'json' | 'junit';
+export type ScreenshotMode = "on" | "off" | "only-on-failure";
+export type TraceMode = "on" | "off" | "retain-on-failure";
+export type ReporterType = "console" | "json" | "junit";
 
 export interface WebSpecConfig {
   /** Base URL prepended to relative navigate paths. */

@@ -8,7 +8,7 @@
  */
 
 // Persistence
-export { parseYaml, stringifyYaml, parseYamlObject } from './persistence/yaml';
+export { parseYaml, stringifyYaml, parseYamlObject } from "./persistence/yaml";
 export {
   readFile,
   writeFile,
@@ -16,8 +16,8 @@ export {
   exists,
   isDirectory,
   isFile,
-} from './persistence/filesystem';
-export { glob, resolveSpecPaths } from './persistence/glob';
+} from "./persistence/filesystem";
+export { glob, resolveSpecPaths } from "./persistence/glob";
 
 // Config
-export { loadConfig, resolveConfig } from './config/loader';
+export { loadConfig, resolveConfig } from "./config/loader";

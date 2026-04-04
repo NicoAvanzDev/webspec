@@ -4,7 +4,7 @@
  * Converts shorthand step notations to full canonical form.
  */
 
-import type { Step, NormalisedStep, SelectorSpec } from '../../domain/index';
+import type { Step, NormalisedStep, SelectorSpec } from "../../domain/index";
 
 /**
  * Normalise steps by expanding shorthand notations.
@@ -20,27 +20,27 @@ function normaliseStep(step: Step): NormalisedStep {
   // Convert string selectors to object form for interaction commands
   if (
     [
-      'click',
-      'doubleClick',
-      'hover',
-      'focus',
-      'check',
-      'uncheck',
-      'assertVisible',
-      'assertNotVisible',
-      'assertEnabled',
-      'assertDisabled',
-      'assertChecked',
-      'assertUnchecked',
-      'waitForElement',
+      "click",
+      "doubleClick",
+      "hover",
+      "focus",
+      "check",
+      "uncheck",
+      "assertVisible",
+      "assertNotVisible",
+      "assertEnabled",
+      "assertDisabled",
+      "assertChecked",
+      "assertUnchecked",
+      "waitForElement",
     ].includes(key) &&
-    typeof value === 'string'
+    typeof value === "string"
   ) {
     return { [key]: { text: value } } as NormalisedStep;
   }
 
   // Convert string navigate to object form
-  if (key === 'navigate' && typeof value === 'string') {
+  if (key === "navigate" && typeof value === "string") {
     return { [key]: { url: value } } as NormalisedStep;
   }
 
@@ -51,20 +51,20 @@ function normaliseStep(step: Step): NormalisedStep {
  * Extract selector fields from a command params object.
  */
 export function extractSelector(params: Record<string, unknown> | string): SelectorSpec | string {
-  if (typeof params === 'string') {
+  if (typeof params === "string") {
     return params;
   }
 
   const selectorFields: (keyof SelectorSpec)[] = [
-    'text',
-    'role',
-    'testid',
-    'label',
-    'placeholder',
-    'css',
-    'xpath',
-    'exact',
-    'nth',
+    "text",
+    "role",
+    "testid",
+    "label",
+    "placeholder",
+    "css",
+    "xpath",
+    "exact",
+    "nth",
   ];
 
   const selector: Record<string, unknown> = {};

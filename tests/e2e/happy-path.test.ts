@@ -14,13 +14,13 @@
  *       It must be run explicitly after a successful build.
  */
 
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
-import * as http from 'http';
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
-import { execFile } from 'child_process';
-import { promisify } from 'util';
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from "vitest";
+import * as http from "http";
+import * as fs from "fs";
+import * as path from "path";
+import * as os from "os";
+import { execFile } from "child_process";
+import { promisify } from "util";
 
 const execFileAsync = promisify(execFile);
 
@@ -28,27 +28,27 @@ const execFileAsync = promisify(execFile);
 // Helpers
 // ---------------------------------------------------------------------------
 
-const FIXTURE_DIR = path.join(__dirname, '..', 'fixtures', 'simple-app');
-const CLI_PATH = path.join(__dirname, '..', '..', 'dist', 'cli', 'index.js');
+const FIXTURE_DIR = path.join(__dirname, "..", "fixtures", "simple-app");
+const CLI_PATH = path.join(__dirname, "..", "..", "dist", "cli", "index.js");
 
 /** Serve the fixture HTML on a random port. */
 function startFixtureServer(): Promise<{ server: http.Server; baseUrl: string }> {
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
       try {
-        const content = fs.readFileSync(path.join(FIXTURE_DIR, 'index.html'));
-        res.writeHead(200, { 'Content-Type': 'text/html' });
+        const content = fs.readFileSync(path.join(FIXTURE_DIR, "index.html"));
+        res.writeHead(200, { "Content-Type": "text/html" });
         res.end(content);
       } catch (err) {
         res.writeHead(500);
-        res.end('fixture error');
+        res.end("fixture error");
       }
     });
-    server.listen(0, '127.0.0.1', () => {
+    server.listen(0, "127.0.0.1", () => {
       const addr = server.address() as { port: number };
       resolve({ server, baseUrl: `http://127.0.0.1:${addr.port}` });
     });
-    server.on('error', reject);
+    server.on("error", reject);
   });
 }
 
@@ -70,9 +70,9 @@ async function runCli(
   } catch (err: unknown) {
     const e = err as { stdout?: string; stderr?: string; code?: number };
     return {
-      stdout: e.stdout ?? '',
-      stderr: e.stderr ?? '',
-      exitCode: typeof e.code === 'number' ? e.code : 1,
+      stdout: e.stdout ?? "",
+      stderr: e.stderr ?? "",
+      exitCode: typeof e.code === "number" ? e.code : 1,
     };
   }
 }
@@ -80,7 +80,7 @@ async function runCli(
 /** Write a temporary spec file and return its path. */
 function writeTempSpec(dir: string, name: string, yaml: string): string {
   const specPath = path.join(dir, name);
-  fs.writeFileSync(specPath, yaml, 'utf-8');
+  fs.writeFileSync(specPath, yaml, "utf-8");
   return specPath;
 }
 
@@ -112,7 +112,7 @@ afterAll(() => {
 let tmpDir: string;
 
 beforeEach(() => {
-  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'webspec-e2e-'));
+  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "webspec-e2e-"));
 });
 
 afterEach(() => {
@@ -134,13 +134,13 @@ function requireBuild() {
 // Tests
 // ---------------------------------------------------------------------------
 
-describe('webspec CLI e2e — happy path', () => {
-  it('exits 0 when spec passes: navigate + assertVisible + assertTitle', async () => {
+describe("webspec CLI e2e — happy path", () => {
+  it("exits 0 when spec passes: navigate + assertVisible + assertTitle", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'home.spec.yaml',
+      "home.spec.yaml",
       `
 name: e2e - homepage
 steps:
@@ -151,20 +151,25 @@ steps:
 `,
     );
 
-    const { exitCode, stdout } = await runCli(
-      ['run', specPath, '--base-url', baseUrl, '--reporter', 'console'],
-    );
+    const { exitCode, stdout } = await runCli([
+      "run",
+      specPath,
+      "--base-url",
+      baseUrl,
+      "--reporter",
+      "console",
+    ]);
 
     expect(exitCode).toBe(0);
     expect(stdout).toMatch(/passed/i);
   }, 45_000);
 
-  it('exits 0 for login flow: fill + click + assertVisible (dashboard)', async () => {
+  it("exits 0 for login flow: fill + click + assertVisible (dashboard)", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'login.spec.yaml',
+      "login.spec.yaml",
       `
 name: e2e - login happy path
 steps:
@@ -189,20 +194,25 @@ steps:
 `,
     );
 
-    const { exitCode, stdout } = await runCli(
-      ['run', specPath, '--base-url', baseUrl, '--reporter', 'console'],
-    );
+    const { exitCode, stdout } = await runCli([
+      "run",
+      specPath,
+      "--base-url",
+      baseUrl,
+      "--reporter",
+      "console",
+    ]);
 
     expect(exitCode).toBe(0);
     expect(stdout).toMatch(/passed/i);
   }, 45_000);
 
-  it('exits 0 for login flow using env interpolation', async () => {
+  it("exits 0 for login flow using env interpolation", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'login-env.spec.yaml',
+      "login-env.spec.yaml",
       `
 name: e2e - login with env vars
 env:
@@ -225,20 +235,20 @@ steps:
 `,
     );
 
-    const { exitCode } = await runCli(
-      ['run', specPath, '--base-url', baseUrl],
-      { TEST_EMAIL: 'user@example.com', TEST_PASSWORD: 'secret' },
-    );
+    const { exitCode } = await runCli(["run", specPath, "--base-url", baseUrl], {
+      TEST_EMAIL: "user@example.com",
+      TEST_PASSWORD: "secret",
+    });
 
     expect(exitCode).toBe(0);
   }, 45_000);
 
-  it('exits 0 for assertCount on list items', async () => {
+  it("exits 0 for assertCount on list items", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'count.spec.yaml',
+      "count.spec.yaml",
       `
 name: e2e - assertCount
 steps:
@@ -261,20 +271,18 @@ steps:
 `,
     );
 
-    const { exitCode } = await runCli(
-      ['run', specPath, '--base-url', baseUrl],
-    );
+    const { exitCode } = await runCli(["run", specPath, "--base-url", baseUrl]);
 
     expect(exitCode).toBe(0);
   }, 45_000);
 
-  it('exits 0 for screenshot utility step', async () => {
+  it("exits 0 for screenshot utility step", async () => {
     requireBuild();
 
-    const screenshotPath = path.join(tmpDir, 'capture.png');
+    const screenshotPath = path.join(tmpDir, "capture.png");
     const specPath = writeTempSpec(
       tmpDir,
-      'screenshot.spec.yaml',
+      "screenshot.spec.yaml",
       `
 name: e2e - screenshot
 steps:
@@ -282,26 +290,24 @@ steps:
   - assertVisible:
       testid: main-heading
   - screenshot:
-      path: ${screenshotPath.replace(/\\/g, '/')}
+      path: ${screenshotPath.replace(/\\/g, "/")}
 `,
     );
 
-    const { exitCode } = await runCli(
-      ['run', specPath, '--base-url', baseUrl],
-    );
+    const { exitCode } = await runCli(["run", specPath, "--base-url", baseUrl]);
 
     expect(exitCode).toBe(0);
     expect(fs.existsSync(screenshotPath)).toBe(true);
   }, 45_000);
 
-  it('exits 0 for runFlow composing a reusable login flow', async () => {
+  it("exits 0 for runFlow composing a reusable login flow", async () => {
     requireBuild();
 
     // Write the shared flow
-    const flowsDir = path.join(tmpDir, 'flows');
+    const flowsDir = path.join(tmpDir, "flows");
     fs.mkdirSync(flowsDir);
     fs.writeFileSync(
-      path.join(flowsDir, 'login.yaml'),
+      path.join(flowsDir, "login.yaml"),
       `
 name: shared login flow
 steps:
@@ -316,12 +322,12 @@ steps:
       role: button
       name: Sign In
 `,
-      'utf-8',
+      "utf-8",
     );
 
     const specPath = writeTempSpec(
       tmpDir,
-      'composed.spec.yaml',
+      "composed.spec.yaml",
       `
 name: e2e - runFlow composition
 steps:
@@ -335,21 +341,19 @@ steps:
 `,
     );
 
-    const { exitCode } = await runCli(
-      ['run', specPath, '--base-url', baseUrl],
-    );
+    const { exitCode } = await runCli(["run", specPath, "--base-url", baseUrl]);
 
     expect(exitCode).toBe(0);
   }, 45_000);
 });
 
-describe('webspec CLI e2e — failure cases', () => {
-  it('exits 1 when assertVisible fails (element absent)', async () => {
+describe("webspec CLI e2e — failure cases", () => {
+  it("exits 1 when assertVisible fails (element absent)", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'fail-visible.spec.yaml',
+      "fail-visible.spec.yaml",
       `
 name: e2e - assertVisible failure
 steps:
@@ -359,19 +363,24 @@ steps:
 `,
     );
 
-    const { exitCode } = await runCli(
-      ['run', specPath, '--base-url', baseUrl, '--timeout', '2000'],
-    );
+    const { exitCode } = await runCli([
+      "run",
+      specPath,
+      "--base-url",
+      baseUrl,
+      "--timeout",
+      "2000",
+    ]);
 
     expect(exitCode).toBe(1);
   }, 45_000);
 
-  it('exits 1 when login credentials are wrong (error shown, dashboard absent)', async () => {
+  it("exits 1 when login credentials are wrong (error shown, dashboard absent)", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'fail-login.spec.yaml',
+      "fail-login.spec.yaml",
       `
 name: e2e - bad credentials
 steps:
@@ -391,19 +400,24 @@ steps:
 `,
     );
 
-    const { exitCode } = await runCli(
-      ['run', specPath, '--base-url', baseUrl, '--timeout', '2000'],
-    );
+    const { exitCode } = await runCli([
+      "run",
+      specPath,
+      "--base-url",
+      baseUrl,
+      "--timeout",
+      "2000",
+    ]);
 
     expect(exitCode).toBe(1);
   }, 45_000);
 
-  it('exits 1 when assertCount has wrong expected count', async () => {
+  it("exits 1 when assertCount has wrong expected count", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'fail-count.spec.yaml',
+      "fail-count.spec.yaml",
       `
 name: e2e - assertCount failure
 steps:
@@ -423,21 +437,26 @@ steps:
 `,
     );
 
-    const { exitCode } = await runCli(
-      ['run', specPath, '--base-url', baseUrl, '--timeout', '3000'],
-    );
+    const { exitCode } = await runCli([
+      "run",
+      specPath,
+      "--base-url",
+      baseUrl,
+      "--timeout",
+      "3000",
+    ]);
 
     expect(exitCode).toBe(1);
   }, 45_000);
 });
 
-describe('webspec CLI e2e — validate command', () => {
-  it('exits 0 for a valid spec', async () => {
+describe("webspec CLI e2e — validate command", () => {
+  it("exits 0 for a valid spec", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'valid.spec.yaml',
+      "valid.spec.yaml",
       `
 name: e2e - valid spec
 steps:
@@ -447,17 +466,17 @@ steps:
 `,
     );
 
-    const { exitCode } = await runCli(['validate', specPath]);
+    const { exitCode } = await runCli(["validate", specPath]);
 
     expect(exitCode).toBe(0);
   }, 15_000);
 
-  it('exits 1 for an invalid spec (missing required selector field)', async () => {
+  it("exits 1 for an invalid spec (missing required selector field)", async () => {
     requireBuild();
 
     const specPath = writeTempSpec(
       tmpDir,
-      'invalid.spec.yaml',
+      "invalid.spec.yaml",
       `
 name: e2e - invalid spec
 steps:
@@ -466,7 +485,7 @@ steps:
 `,
     );
 
-    const { exitCode } = await runCli(['validate', specPath]);
+    const { exitCode } = await runCli(["validate", specPath]);
 
     expect(exitCode).toBe(1);
   }, 15_000);

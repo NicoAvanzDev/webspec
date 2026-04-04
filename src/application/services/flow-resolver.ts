@@ -5,10 +5,10 @@
  * Detects circular dependencies.
  */
 
-import * as path from 'node:path';
-import type { Step, NormalisedStep } from '../../domain/index';
-import { CircularFlowError, FlowNotFoundError, ValidationError } from '../../domain/index';
-import { parseSpec } from './spec-parser';
+import * as path from "node:path";
+import type { Step, NormalisedStep } from "../../domain/index";
+import { CircularFlowError, FlowNotFoundError, ValidationError } from "../../domain/index";
+import { parseSpec } from "./spec-parser";
 
 export interface FlowResolutionOptions {
   readonly parentPath: string;
@@ -38,10 +38,10 @@ async function resolveFlowsRecursive(
   stack: string[],
 ): Promise<void> {
   for (const step of steps) {
-    if ('runFlow' in step) {
+    if ("runFlow" in step) {
       const flowRef = step.runFlow;
-      const flowPath = typeof flowRef === 'string' ? flowRef : flowRef.path;
-      const flowEnv = typeof flowRef === 'string' ? {} : (flowRef.env ?? {});
+      const flowPath = typeof flowRef === "string" ? flowRef : flowRef.path;
+      const flowEnv = typeof flowRef === "string" ? {} : (flowRef.env ?? {});
 
       const absolutePath = path.resolve(path.dirname(options.parentPath), flowPath);
 

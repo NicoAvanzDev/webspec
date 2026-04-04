@@ -2,8 +2,8 @@
  * Glob utility for file pattern matching.
  */
 
-import fg from 'fast-glob';
-import { exists, isFile } from './filesystem';
+import fg from "fast-glob";
+import { exists, isFile } from "./filesystem";
 
 /**
  * Find files matching a glob pattern.
@@ -21,7 +21,7 @@ export async function glob(pattern: string, cwd: string): Promise<string[]> {
  * Resolve spec paths from input (file, directory, or glob pattern).
  */
 export async function resolveSpecPaths(inputPath: string, cwd: string): Promise<string[]> {
-  const absolutePath = inputPath.startsWith('/') ? inputPath : `${cwd}/${inputPath}`;
+  const absolutePath = inputPath.startsWith("/") ? inputPath : `${cwd}/${inputPath}`;
 
   // Single file
   if (exists(absolutePath) && isFile(absolutePath)) {
@@ -29,7 +29,7 @@ export async function resolveSpecPaths(inputPath: string, cwd: string): Promise<
   }
 
   // Glob pattern
-  if (inputPath.includes('*') || inputPath.includes('?')) {
+  if (inputPath.includes("*") || inputPath.includes("?")) {
     return glob(inputPath, cwd);
   }
 

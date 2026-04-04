@@ -2,7 +2,7 @@
  * Console reporter implementation.
  */
 
-import type { SpecResult, StepResult, RunSummary } from '../../domain/index';
+import type { SpecResult, StepResult, RunSummary } from "../../domain/index";
 
 export interface Reporter {
   onRunStart(specPaths: readonly string[]): void;
@@ -29,7 +29,7 @@ export class ConsoleReporter implements Reporter {
 
   onStepResult(result: StepResult): void {
     this.stepCount++;
-    const symbol = result.status === 'passed' ? '✓' : result.status === 'failed' ? '✗' : '○';
+    const symbol = result.status === "passed" ? "✓" : result.status === "failed" ? "✗" : "○";
     const duration =
       result.durationMs > 1000
         ? `(${Math.round(result.durationMs / 1000)}s)`
@@ -42,7 +42,7 @@ export class ConsoleReporter implements Reporter {
   }
 
   onSpecResult(result: SpecResult): void {
-    const symbol = result.status === 'passed' ? '✓' : '✗';
+    const symbol = result.status === "passed" ? "✓" : "✗";
     const duration =
       result.durationMs > 1000
         ? `${Math.round(result.durationMs / 1000)}s`
@@ -58,7 +58,7 @@ export class ConsoleReporter implements Reporter {
   }
 
   onRunComplete(summary: RunSummary): void {
-    const symbol = summary.status === 'passed' ? '✓' : '✗';
+    const symbol = summary.status === "passed" ? "✓" : "✗";
     const duration =
       summary.durationMs > 1000
         ? `${Math.round(summary.durationMs / 1000)}s`

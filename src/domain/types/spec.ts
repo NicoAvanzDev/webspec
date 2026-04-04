@@ -55,7 +55,7 @@ export interface SelectorSpec {
 // Browser / viewport
 // ---------------------------------------------------------------------------
 
-export type BrowserType = 'chromium' | 'firefox' | 'webkit';
+export type BrowserType = "chromium" | "firefox" | "webkit";
 
 export interface ViewportSpec {
   readonly width: number;
@@ -68,7 +68,7 @@ export interface ViewportSpec {
 
 export interface NavigateParams {
   readonly url: string;
-  readonly waitUntil?: 'load' | 'domcontentloaded' | 'networkidle' | 'commit';
+  readonly waitUntil?: "load" | "domcontentloaded" | "networkidle" | "commit";
   readonly timeout?: number;
 }
 
@@ -78,7 +78,7 @@ export interface NavigateStep {
 
 export interface ReloadStep {
   readonly reload?: {
-    readonly waitUntil?: NavigateParams['waitUntil'];
+    readonly waitUntil?: NavigateParams["waitUntil"];
     readonly timeout?: number;
   } | null;
 }
@@ -169,7 +169,7 @@ export interface PressKeyStep {
 }
 
 export interface ScrollParams {
-  readonly direction?: 'up' | 'down' | 'left' | 'right';
+  readonly direction?: "up" | "down" | "left" | "right";
   /** Pixels to scroll (default: 300). */
   readonly amount?: number;
   /** Optional element to scroll within. */

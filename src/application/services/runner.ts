@@ -11,10 +11,10 @@
  *   7. Return structured results
  */
 
-import * as path from 'node:path';
-import * as fs from 'node:fs';
-import { chromium, firefox, webkit } from 'playwright';
-import type { Browser, BrowserContext, Page, BrowserType as PWBrowserType } from 'playwright';
+import * as path from "node:path";
+import * as fs from "node:fs";
+import { chromium, firefox, webkit } from "playwright";
+import type { Browser, BrowserContext, Page, BrowserType as PWBrowserType } from "playwright";
 import type {
   ResolvedConfig,
   SpecFile,
@@ -23,25 +23,25 @@ import type {
   StepResult,
   RunSummary,
   SpecStatus,
-} from '../../domain/index';
-import { parseSpec } from './spec-parser';
-import { normaliseSteps } from './normalizer';
-import { resolveEnv } from './env-resolver';
-import { resolveFlows } from './flow-resolver';
-import { resolveConfig } from '../../infrastructure/config/loader';
-import { COMMAND_REGISTRY, getCommandKey } from '../../interface/runtime/commands/index';
-import { captureScreenshot, type ExecutionContext } from '../../interface/runtime/context';
-import { MultiReporter, ConsoleReporter, JsonReporter } from '../../interface/reporters/console';
-import type { Reporter } from '../../interface/reporters/console';
+} from "../../domain/index";
+import { parseSpec } from "./spec-parser";
+import { normaliseSteps } from "./normalizer";
+import { resolveEnv } from "./env-resolver";
+import { resolveFlows } from "./flow-resolver";
+import { resolveConfig } from "../../infrastructure/config/loader";
+import { COMMAND_REGISTRY, getCommandKey } from "../../interface/runtime/commands/index";
+import { captureScreenshot, type ExecutionContext } from "../../interface/runtime/context";
+import { MultiReporter, ConsoleReporter, JsonReporter } from "../../interface/reporters/console";
+import type { Reporter } from "../../interface/reporters/console";
 
 export interface RunOptions {
   readonly headed?: boolean;
-  readonly browser?: ResolvedConfig['browser'];
+  readonly browser?: ResolvedConfig["browser"];
   readonly env?: Readonly<Record<string, string>>;
   readonly baseUrl?: string;
-  readonly screenshot?: ResolvedConfig['screenshot'];
-  readonly trace?: ResolvedConfig['trace'];
-  readonly reporters?: ResolvedConfig['reporters'];
+  readonly screenshot?: ResolvedConfig["screenshot"];
+  readonly trace?: ResolvedConfig["trace"];
+  readonly reporters?: ResolvedConfig["reporters"];
   readonly timeout?: number;
   readonly retries?: number;
   readonly tags?: readonly string[];
@@ -73,7 +73,7 @@ export async function runSpec(options: RunSpecOptions): Promise<SpecResult> {
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     lastResult = await runSpecAttempt(spec, specPath, config, reporter, attempt);
-    if (lastResult.status === 'passed') {
+    if (lastResult.status === "passed") {
       break;
     }
     if (attempt < maxAttempts) {
@@ -102,7 +102,7 @@ export async function runMany(options: RunManyOptions): Promise<RunSummary> {
       options.specPaths.map((specPath) => runSpec({ ...options, specPath, cwd })),
     );
     for (const s of settled) {
-      if (s.status === 'fulfilled') {
+      if (s.status === "fulfilled") {
         results.push(s.value);
       } else {
         console.error(`Unexpected error: ${String(s.reason)}`);
@@ -115,8 +115,8 @@ export async function runMany(options: RunManyOptions): Promise<RunSummary> {
     }
   }
 
-  const passedSpecs = results.filter((r) => r.status === 'passed').length;
-  const failedSpecs = results.filter((r) => r.status !== 'passed').length;
+  const passedSpecs = results.filter((r) => r.status === "passed").length;
+  const failedSpecs = results.filter((r) => r.status !== "passed").length;
 
   const summary: RunSummary = {
     startedAt,
@@ -126,7 +126,7 @@ export async function runMany(options: RunManyOptions): Promise<RunSummary> {
     failedSpecs,
     totalSpecs: results.length,
     results,
-    status: failedSpecs > 0 ? 'failed' : 'passed',
+    status: failedSpecs > 0 ? "failed" : "passed",
   };
 
   reporter.onRunComplete(summary);
@@ -158,7 +158,7 @@ async function runSpecAttempt(
       ...(config.baseUrl ? { baseURL: config.baseUrl } : {}),
     });
 
-    if (config.trace === 'on' || config.trace === 'retain-on-failure') {
+    if (config.trace === "on" || config.trace === "retain-on-failure") {
       await context.tracing.start({ screenshots: true, snapshots: true });
     }
 
@@ -184,14 +184,14 @@ async function runSpecAttempt(
       const stepStartTime = Date.now();
       const cmdKey = getCommandKey(step);
       const entry = cmdKey ? COMMAND_REGISTRY[cmdKey] : undefined;
-      const description = entry ? entry.describe(step) : `[unknown: ${cmdKey ?? '?'}]`;
+      const description = entry ? entry.describe(step) : `[unknown: ${cmdKey ?? "?"}]`;
 
       if (entry === undefined) {
         const result: StepResult = {
           index: i,
-          command: cmdKey ?? 'unknown',
+          command: cmdKey ?? "unknown",
           description,
-          status: 'failed',
+          status: "failed",
           durationMs: 0,
           error: `Unknown command: "${cmdKey}". Check supported commands with \`webspec --help\`.`,
         };
@@ -204,9 +204,9 @@ async function runSpecAttempt(
         await entry.execute(step, ctx);
         const result: StepResult = {
           index: i,
-          command: cmdKey ?? 'unknown',
+          command: cmdKey ?? "unknown",
           description,
-          status: 'passed',
+          status: "passed",
           durationMs: Date.now() - stepStartTime,
         };
         stepResults.push(result);
@@ -214,15 +214,15 @@ async function runSpecAttempt(
       } catch (err) {
         const error = err instanceof Error ? err : new Error(String(err));
         let screenshotPath: string | undefined;
-        if (config.screenshot !== 'off') {
+        if (config.screenshot !== "off") {
           screenshotPath = await captureScreenshot(ctx, description, true);
         }
 
         const result: StepResult = {
           index: i,
-          command: cmdKey ?? 'unknown',
+          command: cmdKey ?? "unknown",
           description,
-          status: 'failed',
+          status: "failed",
           durationMs: Date.now() - stepStartTime,
           error: error.message,
           ...(screenshotPath !== undefined ? { screenshotPath } : {}),
@@ -236,9 +236,9 @@ async function runSpecAttempt(
           const e2 = k ? COMMAND_REGISTRY[k] : undefined;
           stepResults.push({
             index: j,
-            command: k ?? 'unknown',
-            description: e2 ? e2.describe(s) : `[${k ?? 'unknown'}]`,
-            status: 'skipped',
+            command: k ?? "unknown",
+            description: e2 ? e2.describe(s) : `[${k ?? "unknown"}]`,
+            status: "skipped",
             durationMs: 0,
           });
         }
@@ -246,16 +246,16 @@ async function runSpecAttempt(
       }
     }
 
-    if (config.trace !== 'off' && context !== undefined) {
-      const allPassed = stepResults.every((s) => s.status !== 'failed');
+    if (config.trace !== "off" && context !== undefined) {
+      const allPassed = stepResults.every((s) => s.status !== "failed");
       const saveTrace =
-        config.trace === 'on' || (config.trace === 'retain-on-failure' && !allPassed);
+        config.trace === "on" || (config.trace === "retain-on-failure" && !allPassed);
 
       if (saveTrace) {
         fs.mkdirSync(config.artifactsDir, { recursive: true });
         tracePath = path.join(
           config.artifactsDir,
-          `trace-${spec.name.replace(/\s+/g, '-')}-${Date.now()}.zip`,
+          `trace-${spec.name.replace(/\s+/g, "-")}-${Date.now()}.zip`,
         );
         await context.tracing.stop({ path: tracePath });
       } else {
@@ -267,7 +267,7 @@ async function runSpecAttempt(
     const specResult: SpecResult = {
       name: spec.name,
       specPath,
-      status: 'error',
+      status: "error",
       steps: [],
       durationMs: Date.now() - startTime,
       passedSteps: 0,
@@ -287,9 +287,9 @@ async function runSpecAttempt(
     }
   }
 
-  const passedSteps = stepResults.filter((s) => s.status === 'passed').length;
-  const failedSteps = stepResults.filter((s) => s.status === 'failed').length;
-  const status: SpecStatus = failedSteps > 0 ? 'failed' : 'passed';
+  const passedSteps = stepResults.filter((s) => s.status === "passed").length;
+  const failedSteps = stepResults.filter((s) => s.status === "failed").length;
+  const status: SpecStatus = failedSteps > 0 ? "failed" : "passed";
 
   const specResult: SpecResult = {
     name: spec.name,
@@ -316,11 +316,11 @@ function launchBrowser(config: ResolvedConfig): Promise<Browser> {
   return launcher.launch({ headless: config.headless });
 }
 
-function createReporter(reporters: ResolvedConfig['reporters']): Reporter {
+function createReporter(reporters: ResolvedConfig["reporters"]): Reporter {
   const instances: Reporter[] = [];
   for (const r of reporters) {
-    if (r === 'console') instances.push(new ConsoleReporter());
-    if (r === 'json') instances.push(new JsonReporter());
+    if (r === "console") instances.push(new ConsoleReporter());
+    if (r === "json") instances.push(new JsonReporter());
   }
   if (instances.length === 1) {
     return instances[0] as Reporter;
