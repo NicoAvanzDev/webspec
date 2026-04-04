@@ -1,69 +1,90 @@
 # WebSpec
 
-A CLI + runtime + agent-harness integration framework for browser web automation.
+Browser automation for the agent era. Describe a web flow in plain language — your AI agent writes the spec and runs it.
 
-WebSpec lets you write readable, declarative YAML specs for browser flows and run them with Playwright — with first-class support for LLM agent integration.
+WebSpec is a YAML-spec + Playwright runtime designed to be driven by AI agents (Claude Code, Codex, OpenCode). You almost never touch the YAML.
 
 ---
 
-## Features
+## How it works
 
-- **YAML-first specs** — human-readable, composable with `runFlow`, `${VAR}` interpolation
-- **Playwright-powered** — full Chromium/Firefox/WebKit support, auto-retrying assertions
-- **Agent harness** — intent classification, mobile refusal, spec drafting guidance, CLI call contracts
-- **Layered config** — CLI flags > env vars > spec file > config file > built-in defaults
-- **Reporters** — console, JSON, JUnit XML
-- **Traces + screenshots** — configurable capture modes for debugging
+```text
+You:   /webspec:draft "test that login shows an error on bad credentials"
+Agent: Drafting spec...
+       ✓ tests/specs/login-error.spec.yaml written
+
+You:   /webspec:run tests/specs/login-error.spec.yaml
+Agent: Running spec against https://app.example.com ...
+       ✓ navigate /login
+       ✓ fill Email — wrong@example.com
+       ✓ fill Password — wrongpassword
+       ✓ click Sign in
+       ✓ assertVisible "Invalid email or password"
+       Passed in 1.3s
+```
 
 ---
 
 ## Quick start
 
+Install globally:
+
 ```bash
-# Install
-pnpm add webspec
-pnpm exec playwright install chromium
-
-# Initialise a project
-pnpm exec webspec init
-
-# Write a spec
-cat > tests/specs/homepage.spec.yaml << 'EOF'
-name: Homepage loads
-baseUrl: https://example.com
-steps:
-  - navigate: /
-  - assertTitle: Example Domain
-  - assertVisible: "Example Domain"
-EOF
-
-# Run it
-pnpm exec webspec run tests/specs/homepage.spec.yaml
+npm install -g @nicoavanzdev/webspec
+playwright install chromium
 ```
+
+Initialise a project:
+
+```bash
+cd your-project
+webspec init
+```
+
+Install agent harness files (SKILL.md + slash commands):
+
+```bash
+webspec install
+```
+
+Then tell your agent: `/webspec:draft "describe the flow you want to test"`
 
 ---
 
-## Installation
+## Agent setup
+
+`webspec install` writes everything your AI agent needs into the repo — a reference guide and four slash commands — for whichever harnesses you choose:
+
+| Harness | Slash commands |
+|---------|---------------|
+| Claude Code | `/webspec:draft` `/webspec:run` `/webspec:validate` `/webspec:inspect` |
+| OpenCode | `/webspec-draft` `/webspec-run` `/webspec-validate` `/webspec-inspect` |
+| Codex | `webspec-draft` `webspec-run` `webspec-validate` `webspec-inspect` |
+
+**Non-interactive install:**
 
 ```bash
-pnpm add webspec
-# or
-npm install webspec
+webspec install --tools all                  # all harnesses
+webspec install --tools claude,opencode      # specific harnesses
 ```
 
-Install Playwright browsers:
+### Slash commands
 
-```bash
-pnpm exec playwright install          # all browsers
-pnpm exec playwright install chromium  # chromium only
-```
+| Command | What it does |
+|---------|-------------|
+| `/webspec:draft` | Draft a new spec from a plain-language description |
+| `/webspec:run` | Run a spec against a browser |
+| `/webspec:validate` | Validate a spec for schema and syntax errors |
+| `/webspec:inspect` | Inspect a live URL and suggest a spec |
 
 ---
 
-## Writing specs
+## What the agent writes
+
+Specs are YAML files that the agent generates — you read them for review, not to author them.
 
 ```yaml
-name: Login flow
+name: Login error on bad credentials
 baseUrl: https://app.example.com
 env:
   PASSWORD: ${TEST_PASSWORD}
@@ -72,130 +93,52 @@ steps:
   - navigate: /login
   - fill:
       label: Email
-      value: user@example.com
+      value: wrong@example.com
   - fill:
       label: Password
-      value: ${PASSWORD}
+      value: wrongpassword
   - click:
       role: button
       name: Sign in
-  - waitForUrl: /dashboard
   - assertVisible:
-      testid: user-menu
+      text: Invalid email or password
 ```
 
-See [docs/spec-format.md](docs/spec-format.md) for the full spec format reference.
+See [docs/spec-format.md](docs/spec-format.md) for the full format reference.
 
 ---
 
-## CLI
+## CLI reference
 
 ```
-webspec run [specs...]          Run specs
-webspec validate [specs...]     Validate without running
-webspec inspect <spec>          Show resolved spec
-webspec init                    Scaffold a new project
-webspec generate --content <y>  Write spec from YAML (agent-facing)
-webspec archive <spec>          Archive spec + metadata
-webspec doctor                  Check environment
+webspec install   Install agent harness files into this repo
+webspec init      Scaffold project config and example spec
+webspec run       Run one or more specs
+webspec validate  Validate specs without running
+webspec inspect   Inspect a URL and suggest a spec
+webspec generate  Write a spec file from YAML content (agent-facing)
+webspec doctor    Check Playwright and environment
+webspec archive   Archive a spec with its metadata
 ```
 
 See [docs/cli.md](docs/cli.md) for full documentation.
 
 ---
 
-## Configuration
+## Web-only
 
-```yaml
-# webspec.config.yaml
-baseUrl: https://app.example.com
-browser: chromium
-timeout: 10000
-retries: 1
-screenshot: only-on-failure
-trace: retain-on-failure
-reporters: [console, json]
-```
-
-See [docs/config.md](docs/config.md) for all options.
+WebSpec automates browsers via Playwright. It does not support native mobile apps (iOS, Android, React Native). The agent harness is trained to refuse mobile requests and explain why.
 
 ---
 
-## Reusable flows
+## Docs
 
-Extract repeated steps into flow files:
-
-```yaml
-# tests/flows/login.yaml
-name: Login
-steps:
-  - navigate: /login
-  - fill: { label: Email, value: ${USERNAME} }
-  - fill: { label: Password, value: ${PASSWORD} }
-  - click: Sign in
-  - waitForUrl: /dashboard
-```
-
-Reference from any spec:
-
-```yaml
-steps:
-  - runFlow:
-      path: ../flows/login.yaml
-      env:
-        USERNAME: alice@example.com
-        PASSWORD: ${ALICE_PASS}
-```
-
----
-
-## Agent integration
-
-WebSpec ships with an agent harness for LLM-powered spec generation:
-
-```typescript
-import { classifyIntent, buildProposal, buildApplyCommand, buildRunCommand } from 'webspec/agent';
-
-const { intent, refusal } = classifyIntent(userMessage);
-if (intent === 'mobile') return reply(refusal);
-
-const proposal = buildProposal({ specYaml, specName, targetUrl, envVarsNeeded });
-// → { spec, cliApplyCommand, cliRunCommand, ... }
-```
-
-See [docs/agent-integration.md](docs/agent-integration.md) and [prompts/](prompts/) for system prompts.
-
----
-
-## Programmatic API
-
-```typescript
-import { runSpec, runMany } from 'webspec';
-
-const result = await runSpec({
-  specPath: 'tests/specs/login.spec.yaml',
-  baseUrl: 'https://staging.example.com',
-  env: { PASSWORD: 'secret' },
-  reporters: ['console'],
-});
-
-console.log(result.status); // 'passed' | 'failed' | 'error'
-```
-
----
-
-## Project structure
-
-```
-webspec.config.yaml
-tests/
-  specs/       ← .spec.yaml files
-  flows/       ← reusable flow files
-webspec-artifacts/
-  screenshots/
-  report.json
-  report.xml
-```
+- [Getting started / agent setup](docs/agent-integration.md)
+- [Spec format reference](docs/spec-format.md)
+- [CLI reference](docs/cli.md)
+- [Configuration](docs/config.md)
+- [Examples](docs/examples.md)
+- [Limitations](docs/limitations.md)
 
 ---
 
