@@ -4,8 +4,6 @@
  * Resolves ${VAR} and ${VAR:-default} patterns in step values.
  */
 
-import type { Step, NormalisedStep } from "../../domain/index";
-
 /**
  * Resolve environment variables in a string value.
  * Supports ${VAR} and ${VAR:-default} syntax.
