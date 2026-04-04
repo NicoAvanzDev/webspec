@@ -7,6 +7,35 @@ on:
     branches: [main]
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type check
+        run: pnpm run typecheck
+
+      - name: Lint with oxlint
+        run: pnpm run lint
+
+      - name: Check formatting
+        run: pnpm run format:check
+
   test:
     runs-on: ubuntu-latest
     permissions:
