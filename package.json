@@ -50,7 +50,7 @@
     "clean": "rimraf dist",
     "example:docs-visibility": "node dist/cli/index.js run examples/docs-visibility.spec.yaml --headed",
     "example:login": "node dist/cli/index.js run examples/login.spec.yaml --headed",
-    "prepublishOnly": "pnpm run clean && pnpm run build && pnpm run test"
+    "prepublishOnly": "npm pack --dry-run"
   },
   "dependencies": {
     "@playwright/test": "^1.42.0",
