@@ -1,5 +1,5 @@
 {
-  "name": "webspec",
+  "name": "@nicoavanzdev/webspec",
   "version": "0.1.0",
   "description": "A CLI + runtime framework for declarative browser-automation specs — web-only, agent-friendly, Playwright-powered",
   "keywords": [
@@ -11,13 +11,13 @@
     "agent",
     "webspec"
   ],
-  "homepage": "https://github.com/webspec/webspec#readme",
+  "homepage": "https://github.com/NicoAvanzDev/webspec#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/webspec/webspec.git"
+    "url": "https://github.com/NicoAvanzDev/webspec.git"
   },
   "bugs": {
-    "url": "https://github.com/webspec/webspec/issues"
+    "url": "https://github.com/NicoAvanzDev/webspec/issues"
   },
   "license": "MIT",
   "author": "WebSpec Contributors",
