@@ -14,7 +14,7 @@
   "homepage": "https://github.com/NicoAvanzDev/webspec#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NicoAvanzDev/webspec.git"
+    "url": "git+https://github.com/NicoAvanzDev/webspec.git"
   },
   "bugs": {
     "url": "https://github.com/NicoAvanzDev/webspec/issues"
